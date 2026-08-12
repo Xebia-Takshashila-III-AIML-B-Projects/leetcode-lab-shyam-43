@@ -1,0 +1,32 @@
+name: Validate Branch Name
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate-branch:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Check Branch Name
+        run: |
+
+          BRANCH="${{ github.head_ref }}"
+
+          echo "Branch: $BRANCH"
+
+          if [[ "$BRANCH" =~ ^feature/lc-[0-9]{4}-[a-z0-9-]+$ ]]; then
+            echo "Valid branch name."
+          else
+            echo "Invalid branch name."
+
+            echo ""
+            echo "Expected format:"
+            echo "feature/lc-0001-two-sum"
+
+            exit 1
+          fi

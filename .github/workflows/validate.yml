@@ -1,0 +1,170 @@
+name: LeetCode Lab Validation
+
+on:
+  push:
+    branches:
+      - "feature/**"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # ----------------------------------------
+      # 1. Checkout Repository
+      # ----------------------------------------
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ----------------------------------------
+      # 2. Setup Python
+      # ----------------------------------------
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # ----------------------------------------
+      # 3. Install Dependencies
+      # ----------------------------------------
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      # ----------------------------------------
+      # 4. Fetch main
+      # ----------------------------------------
+      - name: Fetch Main Branch
+        run: |
+          git fetch origin main:refs/remotes/origin/main
+
+          echo "======================================="
+          echo "Branch Information"
+          echo "======================================="
+          echo "Current branch: ${{ github.ref_name }}"
+          echo "Current commit: ${{ github.sha }}"
+          echo "Main commit:    $(git rev-parse origin/main)"
+          echo "======================================="
+
+      # ----------------------------------------
+      # 5. Detect Solution Files Changed
+      #    Compared with MAIN
+      # ----------------------------------------
+      - name: Detect Changed Solution Files
+        id: changes
+        shell: bash
+        run: |
+
+          echo "======================================="
+          echo "Detecting Changed Solutions"
+          echo "======================================="
+          echo "Comparing:"
+          echo "  origin/main"
+          echo "      ↓"
+          echo "  ${{ github.sha }}"
+          echo ""
+
+          CHANGED=$(
+            git diff \
+              --name-only \
+              origin/main...HEAD \
+              -- \
+              '*solution.py' \
+              | grep -E '(^|/)solution\.py$' \
+              | grep -vF '(Example-solution)' \
+              || true
+          )
+
+          echo "Changed solution files:"
+          echo "---------------------------------------"
+
+          if [ -z "$CHANGED" ]; then
+            echo "(none)"
+          else
+            printf '%s\n' "$CHANGED"
+          fi
+
+          echo "---------------------------------------"
+          echo ""
+
+          {
+            echo "files<<EOF"
+            printf '%s\n' "$CHANGED"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      # ----------------------------------------
+      # 6. Skip if no solutions changed
+      # ----------------------------------------
+      - name: No Solutions Changed
+        if: steps.changes.outputs.files == ''
+        run: |
+          echo "======================================="
+          echo "No solution.py files changed."
+          echo "Skipping validation."
+          echo "======================================="
+
+      # ----------------------------------------
+      # 7. Validate Every Changed Solution
+      # ----------------------------------------
+      - name: Run Validation
+        if: steps.changes.outputs.files != ''
+        shell: bash
+        run: |
+
+          FAILED=0
+
+          echo ""
+          echo "======================================="
+          echo "Running LeetCode Validation"
+          echo "======================================="
+
+          while IFS= read -r file
+          do
+
+            [ -z "$file" ] && continue
+
+            folder=$(dirname "$file")
+
+            echo ""
+            echo "---------------------------------------"
+            echo "Challenge:"
+            echo "$folder"
+            echo "Solution:"
+            echo "$file"
+            echo "---------------------------------------"
+
+            if [ ! -f "$file" ]; then
+              echo "❌ Solution file does not exist."
+              FAILED=1
+              continue
+            fi
+
+            if pytest "$folder" -v
+            then
+              echo ""
+              echo "✅ PASSED"
+            else
+              echo ""
+              echo "❌ FAILED"
+              FAILED=1
+            fi
+
+          done <<< "${{ steps.changes.outputs.files }}"
+
+          echo ""
+          echo "======================================="
+          echo "Validation Summary"
+          echo "======================================="
+
+          if [ "$FAILED" -eq 1 ]; then
+            echo "❌ One or more validations failed."
+            exit 1
+          fi
+
+          echo "✅ All modified challenges passed."
+          echo "======================================="

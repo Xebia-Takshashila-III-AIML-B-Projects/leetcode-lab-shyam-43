@@ -1,0 +1,14 @@
+{
+  "id": 125,
+  "title": "Valid Palindrome",
+  "difficulty": "Easy",
+  "week": 1,
+  "topics": [
+    "String",
+    "Two Pointers"
+  ],
+  "expected_time_minutes": 15,
+  "time_complexity": "O(n)",
+  "space_complexity": "O(1)",
+  "leetcode_url": "https://leetcode.com/problems/valid-palindrome/"
+}

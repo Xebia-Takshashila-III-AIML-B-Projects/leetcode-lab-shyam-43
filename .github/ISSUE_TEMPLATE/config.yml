@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+
+contact_links:
+
+  - name: Course Discussion
+
+    url: https://github.com/YOUR-ORGANIZATION/discussions
+
+    about: Ask general questions using GitHub Discussions instead of opening an issue.
