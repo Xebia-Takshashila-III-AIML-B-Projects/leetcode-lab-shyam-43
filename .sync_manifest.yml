@@ -101,3 +101,4 @@ files:
   CONTRIBUTING.md: c53b749b0e335e94817bc48623401ebdac99943713000f218128971dcbcd8991
   LICENSE: d0f4e773e95e17d1377e1b0260a3b116918cc7794bfeb3d08e68b3ec5eb07436
   challenges/week-03/lc-0622-design-circular-queue/solution.py: 7ff93eb07d31040fbbe7b4dad4c89ae35aae48b2957a8929e31f790c0a2214f6
+  challenges/week-03/lc-0622-design-circular-queue/test_solution.py: d37276856e643cb450c720fcbb5528c6628d1eb15ce34433dbb9d3ceb2ad2f6a
