@@ -102,3 +102,5 @@ files:
   LICENSE: d0f4e773e95e17d1377e1b0260a3b116918cc7794bfeb3d08e68b3ec5eb07436
   challenges/week-03/lc-0622-design-circular-queue/solution.py: 7ff93eb07d31040fbbe7b4dad4c89ae35aae48b2957a8929e31f790c0a2214f6
   challenges/week-03/lc-0622-design-circular-queue/test_solution.py: d37276856e643cb450c720fcbb5528c6628d1eb15ce34433dbb9d3ceb2ad2f6a
+  challenges/week-03/lc-0622-design-circular-queue/editorial.md: 115b40550990bc7a59820e40e4c485f49cf2a74c5cff4f16759eafb12dcddb9d
+  challenges/week-03/lc-0622-design-circular-queue/hints.md: 34ee2954bfcd95c1a879400af762af1a5a850463be38504eb0d5e844f1557adb
